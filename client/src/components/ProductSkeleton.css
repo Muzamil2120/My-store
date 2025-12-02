@@ -1,0 +1,46 @@
+.product-skeleton {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 350px;
+  align-items: center;
+}
+.skeleton-img {
+  width: 100%;
+  max-width: 250px;
+  height: 180px;
+  background: linear-gradient(90deg, #eee 25%, #f3f3f3 50%, #eee 75%);
+  border-radius: 12px;
+  animation: skeleton-loading 1.2s infinite linear;
+}
+.skeleton-line {
+  height: 18px;
+  background: linear-gradient(90deg, #eee 25%, #f3f3f3 50%, #eee 75%);
+  border-radius: 8px;
+  animation: skeleton-loading 1.2s infinite linear;
+}
+.skeleton-title {
+  width: 70%;
+  margin: 0 auto;
+}
+.skeleton-price {
+  width: 40%;
+  margin: 0 auto;
+}
+.skeleton-btn {
+  width: 80%;
+  height: 38px;
+  background: linear-gradient(90deg, #eee 25%, #f3f3f3 50%, #eee 75%);
+  border-radius: 10px;
+  animation: skeleton-loading 1.2s infinite linear;
+}
+@keyframes skeleton-loading {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
