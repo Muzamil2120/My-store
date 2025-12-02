@@ -1,9 +1,10 @@
-// ProductCard.jsx
+// src/components/ProductCard.jsx
+import React from "react";
 import { Link } from "react-router-dom";
-import { useFavorite } from "../context/FavoriteContext";
+import { useFavorite } from "../context/useFavorite";
 
 export default function ProductCard({ product }) {
-  const { toggleFavorite, isFavorite } = useFavorite(); // 💖 new
+  const { toggleFavorite, isFavorite } = useFavorite();
   const fav = isFavorite(product.id);
 
   return (
@@ -75,6 +76,7 @@ export default function ProductCard({ product }) {
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             transition: 0.3s ease;
             border: none;
+            cursor: pointer;
           }
 
           .fav-btn:hover {
@@ -122,8 +124,11 @@ export default function ProductCard({ product }) {
         </button>
 
         <div className="image-box">
-          <span className="category-tag">{product.category}</span>
-          <img src={product.image} alt={product.name} />
+          <span className="category-tag">{product.category || "Product"}</span>
+          <img 
+            src={product.image || "https://via.placeholder.com/300x200"} 
+            alt={product.name} 
+          />
         </div>
 
         <h3 style={{ fontSize: "1.4rem", color: "#2c3e50", fontWeight: "700" }}>
@@ -136,7 +141,7 @@ export default function ProductCard({ product }) {
           fontWeight: "bold",
           marginTop: 10
         }}>
-          ${product.price}
+          ${product.price?.toFixed(2) || "0.00"}
         </h2>
 
         <Link to={`/product/${product.id}`} className="btn" aria-label={`View details for ${product.name}`}>

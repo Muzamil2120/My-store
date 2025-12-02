@@ -1,7 +1,17 @@
-// Products.jsx
+// In Products.jsx, replace lines 1-4 with:
 import React, { useEffect, useState, useMemo } from "react";
-import { getProducts } from "../api/productsApi";
+// Remove the import and create a mock function instead
 import ProductCard from "../components/ProductCard";
+
+// Mock function - add this right after imports
+const fetchProducts = async () => {
+  return [
+    { id: 1, name: "Wireless Headphones", price: 89.99, description: "Premium wireless headphones", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop" },
+    { id: 2, name: "Smart Watch", price: 199.99, description: "Fitness tracker", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop" },
+    { id: 3, name: "Laptop Backpack", price: 49.99, description: "Water-resistant backpack", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop" },
+    { id: 4, name: "Coffee Maker", price: 129.99, description: "Programmable coffee maker", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop" },
+  ];
+};
 
 export default function Products() {
   const [product, setProduct] = useState([]);
@@ -10,7 +20,7 @@ export default function Products() {
   // Fetch products once
   useEffect(() => {
     let mounted = true;
-    getProducts().then((data) => {
+    fetchProducts().then((data) => { // Changed from getProducts to fetchProducts
       if (mounted) setProduct(data);
     }).catch(err => {
       console.error("Failed to fetch products:", err);
