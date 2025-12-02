@@ -1,121 +1,117 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useFavorite } from '../context/FavoriteContext';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
-  const { cart } = useCart();
-  const { favoriteCount } = useFavorite();
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  const [showCart, setShowCart] = useState(true);
+  const location = useLocation();
 
-  const navStyle = {
-    padding: '20px 40px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-    color: '#fff',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-    position: 'sticky',
-    top: 0,
-    zIndex: 1000,
-    backdropFilter: 'blur(10px)'
-  };
-
-  const logoStyle = {
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-    transition: 'transform 0.3s ease'
-  };
-
-  const linkContainerStyle = {
-    display: 'flex',
-    gap: '30px',
-    alignItems: 'center'
-  };
-
-  const linkStyle = {
-    color: '#fff',
-    fontSize: '1.1rem',
-    fontWeight: '500',
-    padding: '8px 16px',
-    borderRadius: '8px',
-    transition: 'all 0.3s ease',
-    position: 'relative'
-  };
-
-  const badgeStyle = {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
-    borderRadius: '50%',
-    padding: '4px 8px',
-    fontSize: '0.75rem',
-    fontWeight: 'bold',
-    minWidth: '20px',
-    textAlign: 'center',
-    boxShadow: '0 2px 8px rgba(255,65,108,0.5)',
-    animation: 'pulse 2s infinite'
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
     <>
       <style>
         {`
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        .navbar {
+          width: 100%;
+          padding: 18px 8%;
+          background: #ffffff;
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+          font-size: 1.9rem;
+          font-weight: 800;
+          letter-spacing: 1px;
+          background: linear-gradient(135deg, #a4508b, #5f0a87);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          cursor: pointer;
+        }
+
+        .nav-links {
+          display: flex;
+          gap: 35px;
+          font-weight: 600;
+          font-size: 1.05rem;
+        }
+
+        .nav-item {
+          color: #333;
+          text-decoration: none;
+          position: relative;
+          padding-bottom: 4px;
+          transition: 0.3s ease;
+        }
+
+        .nav-item:hover {
+          color: #a4508b;
+        }
+
+        .nav-item::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 3px;
+          background: linear-gradient(135deg, #a4508b, #5f0a87);
+          left: 0;
+          bottom: 0;
+          transition: width 0.35s ease;
+        }
+
+        .nav-item:hover::after {
+          width: 100%;
+        }
+
+        .active-link {
+          color: #5f0a87;
+        }
+
+        .active-link::after {
+          width: 100%;
+        }
+
+        @media (max-width: 700px) {
+          .nav-links {
+            gap: 22px;
           }
-          .nav-link:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+          .logo {
+            font-size: 1.6rem;
           }
-          .nav-logo:hover {
-            transform: scale(1.05);
-          }
+        }
         `}
       </style>
-      <nav style={navStyle}>
-        <Link to="/" style={logoStyle} className="nav-logo">
-          <span>🛍️</span>
-          <span>MyStore</span>
+
+      <nav className="navbar">
+        <Link to="/" className="logo">
+          MyStore
         </Link>
-        <div style={linkContainerStyle}>
-          <Link to="/" style={linkStyle} className="nav-link">🏠 Home</Link>
-          <Link to="/products" style={linkStyle} className="nav-link">📦 Products</Link>
-          {showCart && (
-            <Link to="/cart" style={{ ...linkStyle, position: 'relative' }} className="nav-link">
-              🛒 Cart
-              {totalItems > 0 && (
-                <span style={badgeStyle}>{totalItems}</span>
-              )}
-            </Link>
-          )}
-          <span style={{ ...linkStyle, background: 'rgba(255, 215, 0, 0.15)', color: '#f7971e', fontWeight: 700 }}>
-            Favorites: {favoriteCount}
-          </span>
-          <button
-            onClick={() => setShowCart(v => !v)}
-            style={{
-              marginLeft: 10,
-              padding: '6px 14px',
-              borderRadius: 8,
-              border: 'none',
-              background: '#fff',
-              color: '#2a5298',
-              fontWeight: 600,
-              cursor: 'pointer',
-              fontSize: '0.95rem',
-              boxShadow: '0 2px 8px rgba(30,60,114,0.08)'
-            }}
-          >{showCart ? 'Hide Cart' : 'Show Cart'}</button>
+
+        <div className="nav-links">
+          <Link
+            to="/"
+            className={`nav-item ${isActive("/") ? "active-link" : ""}`}
+          >
+            Home
+          </Link>
+
+          <Link
+            to="/products"
+            className={`nav-item ${isActive("/products") ? "active-link" : ""}`}
+          >
+            Products
+          </Link>
+
+          <Link
+            to="/favorites"
+            className={`nav-item ${isActive("/favorites") ? "active-link" : ""}`}
+          >
+            Favorites
+          </Link>
         </div>
       </nav>
     </>

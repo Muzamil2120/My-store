@@ -1,72 +1,97 @@
-
-import { useState } from "react";
-import { useFavorite } from "../context/FavoriteContext";
-import { useProducts } from "../hooks/useProducts";
-import ProductCard from "../components/ProductCard";
-import ProductSkeleton from "../components/ProductSkeleton";
+// Products.jsx
+import React, { useEffect, useState, useMemo } from "react";
+import { getProducts } from "../Services/api";
+import ProductCard from "./ProductCard";
 
 export default function Products() {
-  const [search, setSearch] = useState("");
-  const { products, loading, error } = useProducts();
-  const { addFavorite } = useFavorite();
+  const [product, setProduct] = useState([]);
+  const [searchProd, setSearchProd] = useState("");
 
-  const filtered = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+  // Fetch products once
+  useEffect(() => {
+    let mounted = true;
+    getProducts().then((data) => {
+      if (mounted) setProduct(data);
+    }).catch(err => {
+      console.error("Failed to fetch products:", err);
+    });
+    return () => { mounted = false; };
+  }, []);
 
+  // Derive filtered results with useMemo (no setState in effect)
+  const filteredProd = useMemo(() => {
+    if (!searchProd) return product;
+    const q = searchProd.toLowerCase();
+    return product.filter((item) =>
+      item.name.toLowerCase().includes(q)
+    );
+  }, [product, searchProd]);
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 30 }}>
-      <div style={{ marginBottom: 30 }}>
+    <>
+      <style>
+        {`
+        .products-container {
+          padding: 50px 8%;
+          animation: fadeIn 0.5s ease;
+        }
+
+        .search-bar {
+          width: 100%;
+          max-width: 450px;
+          padding: 14px 18px;
+          border-radius: 14px;
+          border: 2px solid #a4508b44;
+          outline: none;
+          font-size: 1rem;
+          margin-bottom: 40px;
+          background: #ffffff;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          transition: 0.3s ease;
+        }
+
+        .search-bar:focus {
+          border-color: #a4508b;
+          box-shadow: 0 10px 25px rgba(164, 80, 139, 0.3);
+        }
+
+        .products-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          gap: 35px;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(15px);
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        `}
+      </style>
+
+      <div className="products-container">
         <input
           type="text"
-          placeholder="🔍 Search for products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            padding: '15px 25px',
-            width: 'calc(100% - 50px)',
-            border: 'none',
-            fontSize: '1.1rem',
-            borderRadius: 50,
-            outline: 'none',
-            background: 'transparent'
-          }}
+          placeholder="Search products..."
+          className="search-bar"
+          value={searchProd}
+          onChange={(e) => setSearchProd(e.target.value)}
         />
-      </div>
 
-      {loading ? (
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: 30,
-          marginTop: 40
-        }}>
-          {Array.from({ length: 6 }).map((_, i) => <ProductSkeleton key={i} />)}
-        </div>
-      ) : error ? (
-        <div style={{ color: '#e74c3c', textAlign: 'center', fontSize: '1.2rem', marginTop: 40 }}>{error}</div>
-      ) : (
-        <>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: 30
-          }}>
-            {filtered.map(p => <ProductCard key={p.id} product={p} onFavorite={addFavorite} />)}
-          </div>
-          {filtered.length === 0 && (
-            <div style={{
-              textAlign: 'center',
-              padding: 60,
-              background: '#fff',
-              borderRadius: 15,
-              boxShadow: '0 5px 20px rgba(0,0,0,0.1)'
-            }}>
-              <h2 style={{ color: '#999', fontSize: '1.5rem' }}>No products found</h2>
-              <p style={{ color: '#bbb' }}>Try adjusting your search</p>
-            </div>
+        <div className="products-grid">
+          {filteredProd.length > 0 ? (
+            filteredProd.map((item) => (
+              <ProductCard key={item.id} product={item} />
+            ))
+          ) : (
+            <p style={{ fontSize: "1.2rem", color: "#555" }}>No product found.</p>
           )}
-        </>
-      )}
-    </div>
+        </div>
+      </div>
+    </>
   );
 }
