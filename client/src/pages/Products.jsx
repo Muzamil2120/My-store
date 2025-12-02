@@ -1,7 +1,7 @@
 // Products.jsx
 import React, { useEffect, useState, useMemo } from "react";
-import { getProducts } from "../Services/api";
-import ProductCard from "./ProductCard";
+import { getProducts } from "../api/productsApi";
+import ProductCard from "../components/ProductCard";
 
 export default function Products() {
   const [product, setProduct] = useState([]);

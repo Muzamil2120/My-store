@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -11,11 +12,9 @@ import PageTransition from "./components/PageTransition";
 import FavoriteProvider from "./context/FavoriteContext";
 import SplashScreen from "./components/SplashScreen";
 
-import { useState } from "react";
-
 export default function App() {
-
   const [showSplash, setShowSplash] = useState(true);
+
   return (
     <ReactQueryProvider>
       <FavoriteProvider>
